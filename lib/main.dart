@@ -5,6 +5,8 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/routes/app_router.dart';
 import 'core/services/supabase_service.dart';
+import 'core/services/deep_link_service.dart';
+import 'core/di/injection_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +27,9 @@ void main() async {
     // App vẫn có thể chạy nhưng Supabase features sẽ không hoạt động
   }
   
+  // Khởi tạo deep link service để handle OAuth callbacks
+  DeepLinkService.initialize();
+  
   runApp(const MyApp());
 }
 
@@ -33,8 +38,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => InjectionContainer.getAuthProvider()),
+        ChangeNotifierProvider(create: (_) => InjectionContainer.getUserProfileProvider()),
+      ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp.router(
