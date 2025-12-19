@@ -18,6 +18,18 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    // Clear error khi page được mở để tránh hiển thị error cũ
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.error != null) {
+        authProvider.clearError();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -36,6 +48,8 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
 
     if (success) {
+      // Clear error trước khi navigate
+      authProvider.clearError();
       context.go('/home');
     } else {
       // Error sẽ được hiển thị trong UI thông qua error banner
@@ -50,6 +64,8 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
 
     if (success) {
+      // Clear error trước khi navigate
+      authProvider.clearError();
       context.go('/home');
     } else {
       // Error sẽ được hiển thị trong UI thông qua error banner
@@ -84,14 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                 ),
                 const SizedBox(height: 48),
-                // Hiển thị error banner nếu có lỗi
-                if (authProvider.error != null) ...[
-                  ErrorBanner(
-                    message: authProvider.error!,
-                    onDismiss: () => authProvider.clearError(),
-                  ),
-                  const SizedBox(height: 16),
-                ],
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -163,6 +171,14 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text('Forgot Password?'),
                   ),
                 ),
+                // Hiển thị error banner nếu có lỗi (ở dưới các input fields)
+                if (authProvider.error != null) ...[
+                  const SizedBox(height: 16),
+                  ErrorBanner(
+                    message: authProvider.error!,
+                    onDismiss: () => authProvider.clearError(),
+                  ),
+                ],
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: authProvider.isLoading ? null : _handleLogin,
