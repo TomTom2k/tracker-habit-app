@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
   final List<BottomNavItem> items;
@@ -11,6 +11,47 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.onTap,
     required this.items,
   });
+
+  @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  int _previousIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousIndex = widget.currentIndex;
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOutCubic,
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void didUpdateWidget(CustomBottomNavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentIndex != widget.currentIndex) {
+      _previousIndex = oldWidget.currentIndex;
+      _animationController.reset();
+      _animationController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,26 +77,33 @@ class CustomBottomNavBar extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: CustomPaint(
-          painter: NotchPainter(
-            selectedIndex: currentIndex,
-            itemCount: items.length,
-            notchColor: backgroundColor,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(
-              items.length,
-              (index) => _buildNavItem(
-                context,
-                items[index],
-                index,
-                currentIndex == index,
-                selectedColor,
-                unselectedColor,
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return CustomPaint(
+              painter: AnimatedNotchPainter(
+                selectedIndex: widget.currentIndex,
+                previousIndex: _previousIndex,
+                itemCount: widget.items.length,
+                notchColor: backgroundColor,
+                animation: _animation.value,
               ),
-            ),
-          ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(
+                  widget.items.length,
+                  (index) => _buildNavItem(
+                    context,
+                    widget.items[index],
+                    index,
+                    widget.currentIndex == index,
+                    selectedColor,
+                    unselectedColor,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -71,7 +119,7 @@ class CustomBottomNavBar extends StatelessWidget {
   ) {
     return Expanded(
       child: GestureDetector(
-        onTap: () => onTap(index),
+        onTap: () => widget.onTap(index),
         behavior: HitTestBehavior.opaque,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -79,34 +127,32 @@ class CustomBottomNavBar extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(
-                  isSelected ? item.activeIcon : item.icon,
-                  color: isSelected ? selectedColor : unselectedColor,
-                  size: 24,
-                ),
-                if (isSelected)
-                  Positioned(
-                    top: -6,
-                    right: -6,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: selectedColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    );
+                  },
+                  child: Icon(
+                    isSelected ? item.activeIcon : item.icon,
+                    key: ValueKey('${item.label}_$isSelected'),
+                    color: isSelected ? selectedColor : unselectedColor,
+                    size: 24,
                   ),
+                ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(
-              item.label,
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 color: isSelected ? selectedColor : unselectedColor,
               ),
+              child: Text(item.label),
             ),
           ],
         ),
@@ -115,21 +161,30 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 }
 
-class NotchPainter extends CustomPainter {
+class AnimatedNotchPainter extends CustomPainter {
   final int selectedIndex;
+  final int previousIndex;
   final int itemCount;
   final Color notchColor;
+  final double animation;
 
-  NotchPainter({
+  AnimatedNotchPainter({
     required this.selectedIndex,
+    required this.previousIndex,
     required this.itemCount,
     required this.notchColor,
+    required this.animation,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final itemWidth = size.width / itemCount;
-    final centerX = (selectedIndex * itemWidth) + (itemWidth / 2);
+    
+    // Tính toán vị trí notch với animation
+    final previousCenterX = (previousIndex * itemWidth) + (itemWidth / 2);
+    final currentCenterX = (selectedIndex * itemWidth) + (itemWidth / 2);
+    final centerX = previousCenterX + (currentCenterX - previousCenterX) * animation;
+    
     const notchHeight = 18.0;
     const notchWidth = 48.0;
     const borderRadius = 24.0;
@@ -151,22 +206,23 @@ class NotchPainter extends CustomPainter {
       path.lineTo(borderRadius, 0);
     }
     
-    // Vẽ notch (vết lõm lên trên)
+    // Vẽ notch (vết lõm lên trên) với animation
+    final animatedNotchHeight = notchHeight * (0.5 + 0.5 * animation);
     path.quadraticBezierTo(
       centerX - notchWidth / 3,
-      -notchHeight * 0.5,
+      -animatedNotchHeight * 0.5,
       centerX - notchWidth / 6,
-      -notchHeight * 0.2,
+      -animatedNotchHeight * 0.2,
     );
     path.quadraticBezierTo(
       centerX,
-      -notchHeight,
+      -animatedNotchHeight,
       centerX + notchWidth / 6,
-      -notchHeight * 0.2,
+      -animatedNotchHeight * 0.2,
     );
     path.quadraticBezierTo(
       centerX + notchWidth / 3,
-      -notchHeight * 0.5,
+      -animatedNotchHeight * 0.5,
       centerX + notchWidth / 2,
       0,
     );
@@ -218,8 +274,10 @@ class NotchPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(NotchPainter oldDelegate) {
-    return oldDelegate.selectedIndex != selectedIndex;
+  bool shouldRepaint(AnimatedNotchPainter oldDelegate) {
+    return oldDelegate.selectedIndex != selectedIndex ||
+        oldDelegate.animation != animation ||
+        oldDelegate.previousIndex != previousIndex;
   }
 }
 

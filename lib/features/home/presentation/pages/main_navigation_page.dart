@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/home_page.dart';
 import '../../../habit/presentation/pages/habit_page.dart';
-import '../../../routines/presentation/pages/routines_page.dart';
+import '../../../todo/presentation/pages/todo_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../statistics/presentation/pages/statistics_page.dart';
 import '../../../../core/widgets/custom_bottom_nav_bar.dart';
@@ -19,7 +19,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const HabitPage(),
-    const RoutinesPage(),
+    const TodoPage(),
     const ProfilePage(),
     const StatisticsPage(),
   ];
@@ -36,9 +36,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       label: 'Habit',
     ),
     BottomNavItem(
-      icon: Icons.schedule_outlined,
-      activeIcon: Icons.schedule,
-      label: 'Routines',
+      icon: Icons.task_outlined,
+      activeIcon: Icons.task,
+      label: 'Todo',
     ),
     BottomNavItem(
       icon: Icons.person_outline,
