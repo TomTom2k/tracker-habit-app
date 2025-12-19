@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/routes/app_router.dart';
+import 'core/services/supabase_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    // Load environment variables
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    // .env file không tồn tại, sẽ sử dụng environment variables hoặc defaults
+    print('Note: .env file not found. Using environment variables or defaults.');
+  }
+  
+  // Khởi tạo Supabase
+  try {
+    await SupabaseService.initialize();
+  } catch (e) {
+    print('Warning: Failed to initialize Supabase: $e');
+    // App vẫn có thể chạy nhưng Supabase features sẽ không hoạt động
+  }
+  
   runApp(const MyApp());
 }
 
