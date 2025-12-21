@@ -126,13 +126,6 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
                 fontWeight: FontWeight.bold,
               ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          'Build routines that will lead you to success',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-        ),
       ],
     );
   }
