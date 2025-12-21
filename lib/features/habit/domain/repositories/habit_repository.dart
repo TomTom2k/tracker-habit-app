@@ -52,5 +52,8 @@ abstract class HabitRepository {
 
   /// Lấy tất cả check-ins hôm nay cho tất cả habits (trả về Map với key là habit_id)
   Future<Map<String, HabitCheckinEntity>> getTodayCheckinsForAllHabits();
+
+  /// Xóa check-in (toggle off)
+  Future<void> deleteCheckin(String checkinId);
 }
 

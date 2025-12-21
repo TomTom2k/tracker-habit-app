@@ -16,6 +16,7 @@ abstract class HabitRemoteDataSource {
   Future<HabitCheckinModel?> getCheckinByDate(String habitId, DateTime date);
   Future<int> getTodayCheckinsCount();
   Future<Map<String, HabitCheckinModel>> getTodayCheckinsForAllHabits();
+  Future<void> deleteCheckin(String checkinId);
 }
 
 class HabitRemoteDataSourceImpl implements HabitRemoteDataSource {
@@ -240,6 +241,15 @@ class HabitRemoteDataSourceImpl implements HabitRemoteDataSource {
       print('Error loading today checkins: $e');
       print('Error stack trace: ${e.toString()}');
       return {};
+    }
+  }
+
+  @override
+  Future<void> deleteCheckin(String checkinId) async {
+    try {
+      await apiClient.delete('habit_checkins', checkinId);
+    } catch (e) {
+      throw ErrorParser.parseError(e);
     }
   }
 }

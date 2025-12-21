@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/habit_entity.dart';
 import '../providers/habit_provider.dart';
+import 'mini_calendar.dart';
+import 'habit_calendar_dialog.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitEntity habit;
@@ -47,12 +49,47 @@ class _HabitCardState extends State<HabitCard> {
     }
   }
 
+  void _openCalendarDialog(BuildContext context) async {
+    final provider = Provider.of<HabitProvider>(context, listen: false);
+    
+    // Load check-ins cho habit này
+    await provider.loadHabitCheckins(widget.habit.id);
+    
+    if (!context.mounted) return;
+    
+    final checkins = provider.getHabitCheckins(widget.habit.id);
+    
+    await showDialog(
+      context: context,
+      builder: (context) => HabitCalendarDialog(
+        habit: widget.habit,
+        checkins: checkins,
+        onToggleCheckin: (date, isCheckedIn) async {
+          await provider.toggleCheckin(
+            habitId: widget.habit.id,
+            date: date,
+          );
+          // Reload check-ins sau khi toggle
+          if (context.mounted) {
+            await provider.loadHabitCheckins(widget.habit.id);
+          }
+        },
+      ),
+    );
+    
+    // Reload check-ins sau khi đóng dialog
+    if (context.mounted) {
+      await provider.loadHabitCheckins(widget.habit.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<HabitProvider>(context);
     final isCheckedInToday = provider.isCheckedInToday(widget.habit.id);
     final habitColor = _getColorFromHex(widget.habit.color);
     final habitIcon = _getIconFromName(widget.habit.icon);
+    final checkins = provider.getHabitCheckins(widget.habit.id);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -92,11 +129,15 @@ class _HabitCardState extends State<HabitCard> {
           ),
           const SizedBox(height: 12),
           
-          // Progress Grid và Habit Info
+          // Mini Calendar và Habit Info
           Row(
             children: [
-              // Progress Grid (6x6)
-              _buildProgressGrid(habitColor),
+              // Mini Calendar
+              MiniCalendar(
+                checkins: checkins,
+                habitColor: habitColor,
+                onTap: () => _openCalendarDialog(context),
+              ),
               const SizedBox(width: 16),
               
               // Habit Info
@@ -206,32 +247,6 @@ class _HabitCardState extends State<HabitCard> {
     );
   }
 
-  Widget _buildProgressGrid(Color color) {
-    // Tạo 6x6 grid (36 squares)
-    return SizedBox(
-      width: 60,
-      height: 60,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 6,
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 2,
-        ),
-        itemCount: 36,
-        itemBuilder: (context, index) {
-          // Random fill một số squares để demo (sẽ thay bằng logic thực tế)
-          final isFilled = index < 24; // 24/36 filled
-          return Container(
-            decoration: BoxDecoration(
-              color: isFilled ? color.withOpacity(0.6) : Colors.grey[200],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   Widget _buildDayIndicators(Color color) {
     final days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];

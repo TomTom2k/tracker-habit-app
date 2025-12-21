@@ -104,5 +104,10 @@ class HabitRepositoryImpl implements HabitRepository {
     final models = await remoteDataSource.getTodayCheckinsForAllHabits();
     return models.map((key, value) => MapEntry(key, value.toEntity()));
   }
+
+  @override
+  Future<void> deleteCheckin(String checkinId) async {
+    await remoteDataSource.deleteCheckin(checkinId);
+  }
 }
 
