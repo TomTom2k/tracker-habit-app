@@ -10,6 +10,9 @@ import '../../features/habit/presentation/providers/habit_provider.dart';
 import '../../features/todo/data/datasources/todo_remote_data_source.dart';
 import '../../features/todo/data/repositories/todo_repository_impl.dart';
 import '../../features/todo/presentation/providers/todo_provider.dart';
+import '../../features/pomodoro/data/datasources/pomodoro_local_data_source.dart';
+import '../../features/pomodoro/data/repositories/pomodoro_repository_impl.dart';
+import '../../features/pomodoro/presentation/providers/pomodoro_provider.dart';
 import '../api/api_client.dart';
 
 /// Dependency Injection Container
@@ -100,6 +103,20 @@ class InjectionContainer {
 
     // Providers
     return TodoProvider(todoRepository: todoRepository);
+  }
+
+  /// Khởi tạo và trả về PomodoroProvider
+  static PomodoroProvider getPomodoroProvider() {
+    // Data sources
+    final pomodoroLocalDataSource = PomodoroLocalDataSourceImpl();
+
+    // Repositories
+    final pomodoroRepository = PomodoroRepositoryImpl(
+      localDataSource: pomodoroLocalDataSource,
+    );
+
+    // Providers
+    return PomodoroProvider(repository: pomodoroRepository);
   }
 }
 

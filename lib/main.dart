@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => InjectionContainer.getUserProfileProvider()),
         ChangeNotifierProvider(create: (_) => InjectionContainer.getHabitProvider()),
         ChangeNotifierProvider(create: (_) => InjectionContainer.getTodoProvider()),
+        ChangeNotifierProvider(create: (_) => InjectionContainer.getPomodoroProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

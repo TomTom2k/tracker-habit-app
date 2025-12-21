@@ -3,7 +3,7 @@ import '../widgets/home_page.dart';
 import '../../../habit/presentation/pages/habit_page.dart';
 import '../../../todo/presentation/pages/todo_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
-import '../../../statistics/presentation/pages/statistics_page.dart';
+import '../../../pomodoro/presentation/pages/pomodoro_page.dart';
 import '../../../../core/widgets/custom_bottom_nav_bar.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     const HabitPage(),
     const TodoPage(),
     const ProfilePage(),
-    const StatisticsPage(),
+    const PomodoroPage(),
   ];
 
   final List<BottomNavItem> _navItems = const [
@@ -47,9 +47,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       label: 'Profile',
     ),
     BottomNavItem(
-      icon: Icons.bar_chart_outlined,
-      activeIcon: Icons.bar_chart,
-      label: 'Statistics',
+      icon: Icons.timer_outlined,
+      activeIcon: Icons.timer,
+      label: 'Pomodoro',
     ),
   ];
 
