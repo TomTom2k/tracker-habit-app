@@ -31,21 +31,26 @@ class ApiClient {
     bool ascending = true,
   }) async {
     return _handleRequest(() async {
-      var query = _supabase.from(table).select();
+      // Build query từng bước để tránh lỗi type
+      dynamic query = _supabase.from(table).select();
       
+      // Apply filter trước
       if (filterColumn != null && filterValue != null) {
-        query = query.eq(filterColumn, filterValue) as dynamic;
+        query = (query as dynamic).eq(filterColumn, filterValue);
       }
       
+      // Apply order sau filter (cần cast vì type đã thay đổi)
       if (orderBy != null) {
-        query = query.order(orderBy, ascending: ascending) as dynamic;
+        query = (query as dynamic).order(orderBy, ascending: ascending);
       }
       
+      // Apply limit cuối cùng
       if (limit != null) {
-        query = query.limit(limit) as dynamic;
+        query = (query as dynamic).limit(limit);
       }
       
-      final response = await query;
+      // Execute query
+      final response = await (query as dynamic);
       return List<Map<String, dynamic>>.from(response);
     });
   }

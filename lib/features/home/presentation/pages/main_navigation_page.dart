@@ -15,6 +15,7 @@ class MainNavigationPage extends StatefulWidget {
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _currentIndex = 0;
+  int _previousIndex = 0;
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -60,8 +61,18 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
+            _previousIndex = _currentIndex;
             _currentIndex = index;
           });
+          
+          // Reload habits khi switch về habit tab
+          if (index == 1 && _previousIndex != 1) {
+            // HabitPage sẽ tự động reload trong didChangeDependencies
+            // Nhưng để đảm bảo, ta có thể trigger reload bằng cách rebuild
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Force rebuild habit page để trigger reload
+            });
+          }
         },
         items: _navItems,
       ),

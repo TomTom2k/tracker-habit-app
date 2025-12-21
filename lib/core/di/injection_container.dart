@@ -4,6 +4,9 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/data/repositories/user_profile_repository_impl.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/profile/presentation/providers/user_profile_provider.dart';
+import '../../features/habit/data/datasources/habit_remote_data_source.dart';
+import '../../features/habit/data/repositories/habit_repository_impl.dart';
+import '../../features/habit/presentation/providers/habit_provider.dart';
 import '../api/api_client.dart';
 
 /// Dependency Injection Container
@@ -49,6 +52,25 @@ class InjectionContainer {
 
     // Providers
     return UserProfileProvider(userProfileRepository: userProfileRepository);
+  }
+
+  /// Khởi tạo và trả về HabitProvider
+  static HabitProvider getHabitProvider() {
+    // API Client (shared)
+    final apiClient = ApiClient();
+
+    // Data sources
+    final habitRemoteDataSource = HabitRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+
+    // Repositories
+    final habitRepository = HabitRepositoryImpl(
+      remoteDataSource: habitRemoteDataSource,
+    );
+
+    // Providers
+    return HabitProvider(habitRepository: habitRepository);
   }
 }
 

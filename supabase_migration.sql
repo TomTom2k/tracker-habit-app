@@ -81,3 +81,5 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 --     FOR EACH ROW
 --     EXECUTE FUNCTION public.handle_new_user();
 
+
+

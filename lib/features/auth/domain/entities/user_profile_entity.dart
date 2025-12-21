@@ -27,3 +27,5 @@ class UserProfileEntity {
   int get hashCode => id.hashCode ^ userId.hashCode;
 }
 
+
+

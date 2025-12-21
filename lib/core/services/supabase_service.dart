@@ -35,12 +35,20 @@ class SupabaseService {
         url: url,
         anonKey: anonKey,
         debug: true, // Set false in production
+        // Supabase Flutter tự động persist session trong secure storage
+        // và auto refresh token, không cần cấu hình thêm
       );
 
       _client = Supabase.instance.client;
       _initialized = true;
       
-      print('Supabase initialized successfully');
+      // Kiểm tra và restore session nếu có
+      final session = _client?.auth.currentSession;
+      if (session != null) {
+        print('Supabase initialized with existing session for user: ${session.user.email}');
+      } else {
+        print('Supabase initialized successfully (no existing session)');
+      }
     } catch (e) {
       print('Error initializing Supabase: $e');
       rethrow;
