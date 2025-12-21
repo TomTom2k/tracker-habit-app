@@ -7,6 +7,9 @@ import '../../features/profile/presentation/providers/user_profile_provider.dart
 import '../../features/habit/data/datasources/habit_remote_data_source.dart';
 import '../../features/habit/data/repositories/habit_repository_impl.dart';
 import '../../features/habit/presentation/providers/habit_provider.dart';
+import '../../features/todo/data/datasources/todo_remote_data_source.dart';
+import '../../features/todo/data/repositories/todo_repository_impl.dart';
+import '../../features/todo/presentation/providers/todo_provider.dart';
 import '../api/api_client.dart';
 
 /// Dependency Injection Container
@@ -71,6 +74,32 @@ class InjectionContainer {
 
     // Providers
     return HabitProvider(habitRepository: habitRepository);
+  }
+
+  /// Khởi tạo và trả về TodoProvider
+  static TodoProvider getTodoProvider() {
+    // API Client (shared)
+    final apiClient = ApiClient();
+
+    // Data sources
+    final todoRemoteDataSource = TodoRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+    final habitRemoteDataSource = HabitRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+
+    // Repositories
+    final habitRepository = HabitRepositoryImpl(
+      remoteDataSource: habitRemoteDataSource,
+    );
+    final todoRepository = TodoRepositoryImpl(
+      remoteDataSource: todoRemoteDataSource,
+      habitRepository: habitRepository,
+    );
+
+    // Providers
+    return TodoProvider(todoRepository: todoRepository);
   }
 }
 
