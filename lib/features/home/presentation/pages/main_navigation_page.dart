@@ -21,8 +21,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     const HomePage(),
     const HabitPage(),
     const TodoPage(),
-    const ProfilePage(),
     const PomodoroPage(),
+    const ProfilePage(),
   ];
 
   final List<BottomNavItem> _navItems = const [
@@ -42,14 +42,14 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       label: 'Todo',
     ),
     BottomNavItem(
-      icon: Icons.person_outline,
-      activeIcon: Icons.person,
-      label: 'Profile',
-    ),
-    BottomNavItem(
       icon: Icons.timer_outlined,
       activeIcon: Icons.timer,
       label: 'Pomodoro',
+    ),
+    BottomNavItem(
+      icon: Icons.person_outline,
+      activeIcon: Icons.person,
+      label: 'Profile',
     ),
   ];
 
