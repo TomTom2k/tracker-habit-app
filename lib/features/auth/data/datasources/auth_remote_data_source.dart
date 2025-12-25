@@ -46,6 +46,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         );
       }
 
+      // Kiểm tra xem có session không (nếu email confirmation tắt thì sẽ có session)
+      // Nếu không có session, có thể cần confirm email trước
+      if (response.session == null) {
+        print('Warning: No session after sign up. Email confirmation may be required.');
+        // Nếu email confirmation được bật, user cần confirm email trước khi đăng nhập
+        // Vẫn trả về user nhưng sẽ cần confirm email
+        // User có thể đăng nhập sau khi confirm email
+        throw const app_exceptions.AppAuthException(
+          'Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập.',
+        );
+      } else {
+        print('Sign up successful with session');
+        // Đảm bảo session được set trong Supabase client
+        // Session đã được set tự động bởi Supabase Flutter SDK
+      }
+
       return UserModel.fromSupabaseUser(response.user!);
     } on AuthException catch (e) {
       // Parse Supabase AuthException thành app exception

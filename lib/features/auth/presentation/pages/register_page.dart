@@ -56,7 +56,22 @@ class _RegisterPageState extends State<RegisterPage> {
     if (success) {
       // Clear error trước khi navigate
       authProvider.clearError();
-      context.go('/home');
+      
+      // Kiểm tra xem user đã được authenticated chưa
+      // Nếu chưa (do email confirmation), thông báo cho user
+      if (authProvider.isAuthenticated) {
+        context.go('/home');
+      } else {
+        // Nếu chưa authenticated, có thể cần confirm email
+        // Hiển thị thông báo và chuyển về login
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập.'),
+            duration: Duration(seconds: 5),
+          ),
+        );
+        context.go('/login');
+      }
     } else {
       // Error sẽ được hiển thị trong UI thông qua error banner
     }
