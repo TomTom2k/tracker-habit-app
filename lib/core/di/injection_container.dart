@@ -13,6 +13,9 @@ import '../../features/todo/presentation/providers/todo_provider.dart';
 import '../../features/pomodoro/data/datasources/pomodoro_local_data_source.dart';
 import '../../features/pomodoro/data/repositories/pomodoro_repository_impl.dart';
 import '../../features/pomodoro/presentation/providers/pomodoro_provider.dart';
+import '../../features/goals/data/datasources/goal_remote_data_source.dart';
+import '../../features/goals/data/repositories/goal_repository_impl.dart';
+import '../../features/goals/presentation/providers/goal_provider.dart';
 import '../api/api_client.dart';
 
 /// Dependency Injection Container
@@ -117,6 +120,25 @@ class InjectionContainer {
 
     // Providers
     return PomodoroProvider(repository: pomodoroRepository);
+  }
+
+  /// Khởi tạo và trả về GoalProvider
+  static GoalProvider getGoalProvider() {
+    // API Client (shared)
+    final apiClient = ApiClient();
+
+    // Data sources
+    final goalRemoteDataSource = GoalRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
+
+    // Repositories
+    final goalRepository = GoalRepositoryImpl(
+      remoteDataSource: goalRemoteDataSource,
+    );
+
+    // Providers
+    return GoalProvider(goalRepository: goalRepository);
   }
 }
 

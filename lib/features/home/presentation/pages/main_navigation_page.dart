@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/home_page.dart';
 import '../../../habit/presentation/pages/habit_page.dart';
 import '../../../todo/presentation/pages/todo_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../pomodoro/presentation/pages/pomodoro_page.dart';
+import '../../../goals/presentation/pages/goals_page.dart';
 import '../../../../core/widgets/custom_bottom_nav_bar.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -18,28 +18,28 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   int _previousIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
-    const HabitPage(),
     const TodoPage(),
+    const GoalsPage(),
+    const HabitPage(),
     const PomodoroPage(),
     const ProfilePage(),
   ];
 
   final List<BottomNavItem> _navItems = const [
     BottomNavItem(
-      icon: Icons.home_outlined,
-      activeIcon: Icons.home,
-      label: 'Home',
+      icon: Icons.task_outlined,
+      activeIcon: Icons.task,
+      label: 'Todo',
+    ),
+    BottomNavItem(
+      icon: Icons.flag_outlined,
+      activeIcon: Icons.flag,
+      label: 'Goals',
     ),
     BottomNavItem(
       icon: Icons.check_circle_outline,
       activeIcon: Icons.check_circle,
       label: 'Habit',
-    ),
-    BottomNavItem(
-      icon: Icons.task_outlined,
-      activeIcon: Icons.task,
-      label: 'Todo',
     ),
     BottomNavItem(
       icon: Icons.timer_outlined,
