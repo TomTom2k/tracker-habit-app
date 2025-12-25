@@ -94,7 +94,7 @@ class _GoalsPageState extends State<GoalsPage> {
           return FloatingActionButton.extended(
             onPressed: () => _showCreateGoalDialog(context, provider),
             icon: const Icon(Icons.add),
-            label: const Text('Mục tiêu mới'),
+            label: const Text('New Goal'),
           );
         },
       ),
@@ -126,14 +126,14 @@ class _GoalsPageState extends State<GoalsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mục tiêu',
+                      'Goals',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$completedCount/$totalCount hoàn thành',
+                      '$completedCount/$totalCount completed',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
                           ),
@@ -191,7 +191,7 @@ class _GoalsPageState extends State<GoalsPage> {
             context,
             provider,
             null,
-            'Tất cả',
+            'All',
             Icons.all_inclusive,
           ),
           const SizedBox(width: 8),
@@ -256,13 +256,49 @@ class _GoalsPageState extends State<GoalsPage> {
   }
 
   Widget _buildGoalsList(BuildContext context, GoalProvider provider) {
+    // Separate completed and active goals
+    final activeGoals = provider.goals.where((g) => !g.isCompleted).toList();
+    final completedGoals = provider.goals.where((g) => g.isCompleted).toList();
+
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
-        ...provider.goals.map((goal) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: GoalCard(goal: goal),
-            )),
+        // Active goals
+        if (activeGoals.isNotEmpty) ...[
+          if (completedGoals.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8, top: 8),
+              child: Text(
+                'Active Goals',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+              ),
+            ),
+          ...activeGoals.map((goal) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GoalCard(goal: goal),
+              )),
+        ],
+        // Completed goals
+        if (completedGoals.isNotEmpty) ...[
+          if (activeGoals.isNotEmpty) const SizedBox(height: 8),
+          Padding(
+            padding: EdgeInsets.only(bottom: 8, top: activeGoals.isEmpty ? 8 : 0),
+            child: Text(
+              'Completed Goals',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+            ),
+          ),
+          ...completedGoals.map((goal) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GoalCard(goal: goal),
+              )),
+        ],
       ],
     );
   }
@@ -279,14 +315,14 @@ class _GoalsPageState extends State<GoalsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Chưa có mục tiêu nào',
+            'No goals yet',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tạo mục tiêu đầu tiên để bắt đầu hành trình của bạn',
+            'Create your first goal to get started',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.secondary,
                 ),

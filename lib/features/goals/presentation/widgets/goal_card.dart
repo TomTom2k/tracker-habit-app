@@ -31,220 +31,317 @@ class _GoalCardState extends State<GoalCard> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      // Category icon
-                      Container(
-                        padding: const EdgeInsets.all(8),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Header with check button and title
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Large check button
+                    GestureDetector(
+                      onTap: () => _toggleGoal(context, provider),
+                      child: Container(
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
-                          color: _getCategoryColor(widget.goal.category)
-                              .withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          shape: BoxShape.circle,
+                          color: widget.goal.isCompleted
+                              ? _getCategoryColor(widget.goal.category)
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: widget.goal.isCompleted
+                                ? _getCategoryColor(widget.goal.category)
+                                : Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+                            width: 2.5,
+                          ),
                         ),
-                        child: Icon(
-                          _getCategoryIcon(widget.goal.category),
-                          color: _getCategoryColor(widget.goal.category),
-                          size: 20,
-                        ),
+                        child: widget.goal.isCompleted
+                            ? Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 32,
+                              )
+                            : Icon(
+                                _getCategoryIcon(widget.goal.category),
+                                color: _getCategoryColor(widget.goal.category).withOpacity(0.5),
+                                size: 24,
+                              ),
                       ),
-                      const SizedBox(width: 12),
-                      // Title and category
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.goal.title,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    decoration: widget.goal.isCompleted
-                                        ? TextDecoration.lineThrough
-                                        : null,
-                                  ),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Text(
-                                  widget.goal.category.displayName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        color: _getCategoryColor(
-                                            widget.goal.category),
-                                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Title and metadata
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.goal.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: widget.goal.isCompleted
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                  color: widget.goal.isCompleted
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : null,
                                 ),
-                                if (widget.goal.targetDate != null) ...[
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.calendar_today,
-                                    size: 12,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _formatDate(widget.goal.targetDate!),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              // Category badge
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: _getCategoryColor(widget.goal.category).withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      _getCategoryIcon(widget.goal.category),
+                                      size: 14,
+                                      color: _getCategoryColor(widget.goal.category),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      widget.goal.category.displayName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: _getCategoryColor(widget.goal.category),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // Target date
+                              if (widget.goal.targetDate != null)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      size: 14,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _formatDate(widget.goal.targetDate!),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
-                      // Expand/collapse icon
-                      Icon(
+                    ),
+                    // Expand/collapse button
+                    IconButton(
+                      icon: Icon(
                         _isExpanded
                             ? Icons.keyboard_arrow_up
                             : Icons.keyboard_arrow_down,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
-                    ],
-                  ),
-
-                  // Description
-                  if (widget.goal.description != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.goal.description!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                      onPressed: () {
+                        setState(() {
+                          _isExpanded = !_isExpanded;
+                        });
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
                   ],
+                ),
 
-                  // Progress bar
-                  if (totalCount > 0) ...[
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .secondary
-                                .withOpacity(0.1),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              _getCategoryColor(widget.goal.category),
-                            ),
-                            minHeight: 6,
-                            borderRadius: BorderRadius.circular(3),
-                          ),
+                // Description
+                if (widget.goal.description != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.goal.description!,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                          height: 1.4,
                         ),
-                        const SizedBox(width: 8),
+                  ),
+                ],
+
+                // Progress bar (only show if there are sub-goals)
+                if (totalCount > 0) ...[
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Progress',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                          ),
+                          Text(
+                            '$completedCount/$totalCount',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: _getCategoryColor(widget.goal.category),
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .secondary
+                              .withOpacity(0.1),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            _getCategoryColor(widget.goal.category),
+                          ),
+                          minHeight: 8,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+
+                // Sub-goals list (expanded)
+                if (_isExpanded) ...[
+                  const SizedBox(height: 20),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                  ),
+                  const SizedBox(height: 16),
+                  // Sub-goals header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Sub-goals',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      if (subGoals.isNotEmpty)
                         Text(
                           '$completedCount/$totalCount',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.secondary,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
-                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Sub-goals list
+                  if (subGoals.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.checklist_outlined,
+                              size: 40,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondary
+                                  .withOpacity(0.4),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'No sub-goals yet',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary,
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Break down your goal into smaller steps',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withOpacity(0.7),
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    ...subGoals.map((subGoal) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: SubGoalItem(subGoal: subGoal),
+                        )),
+                  // Add sub-goal button
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () => _showCreateSubGoalDialog(context),
+                    icon: const Icon(Icons.add, size: 20),
+                    label: const Text('Add Sub-goal'),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 44),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
-                  ],
-
-                  // Sub-goals list (expanded)
-                  if (_isExpanded) ...[
-                    const SizedBox(height: 16),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    // Sub-goals
-                    if (subGoals.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.checklist_outlined,
-                                size: 32,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondary
-                                    .withOpacity(0.5),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Chưa có mục tiêu con',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else
-                      ...subGoals.map((subGoal) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: SubGoalItem(subGoal: subGoal),
-                          )),
-                    // Add sub-goal button
-                    const SizedBox(height: 8),
-                    OutlinedButton.icon(
-                      onPressed: () => _showCreateSubGoalDialog(context),
-                      icon: const Icon(Icons.add, size: 18),
-                      label: const Text('Thêm mục tiêu con'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 40),
+                  ),
+                  // Delete action
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: () => _confirmDelete(context),
+                      icon: const Icon(Icons.delete_outline, size: 18),
+                      label: const Text('Delete Goal'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                     ),
-                    // Actions
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton.icon(
-                          onPressed: () => _confirmDelete(context),
-                          icon: const Icon(Icons.delete_outline, size: 18),
-                          label: const Text('Xóa'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         );
       },
     );
   }
+
 
   Color _getCategoryColor(GoalCategory category) {
     switch (category) {
@@ -291,17 +388,17 @@ class _GoalCardState extends State<GoalCard> {
     final difference = target.difference(today).inDays;
 
     if (difference == 0) {
-      return 'Hôm nay';
+      return 'Today';
     } else if (difference == 1) {
-      return 'Ngày mai';
+      return 'Tomorrow';
     } else if (difference == -1) {
-      return 'Hôm qua';
+      return 'Yesterday';
     } else if (difference > 0 && difference <= 7) {
-      return '$difference ngày nữa';
+      return 'In $difference days';
     } else if (difference < 0 && difference >= -7) {
-      return '${-difference} ngày trước';
+      return '${-difference} days ago';
     } else {
-      return '${date.day}/${date.month}/${date.year}';
+      return '${date.month}/${date.day}/${date.year}';
     }
   }
 
@@ -330,23 +427,30 @@ class _GoalCardState extends State<GoalCard> {
     }
   }
 
+  Future<void> _toggleGoal(BuildContext context, GoalProvider provider) async {
+    await provider.updateGoal(
+      widget.goal.id,
+      isCompleted: !widget.goal.isCompleted,
+    );
+  }
+
   Future<void> _confirmDelete(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Xóa mục tiêu'),
-        content: const Text('Bạn có chắc chắn muốn xóa mục tiêu này?'),
+        title: const Text('Delete Goal'),
+        content: const Text('Are you sure you want to delete this goal?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Hủy'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: const Text('Xóa'),
+            child: const Text('Delete'),
           ),
         ],
       ),

@@ -39,7 +39,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Tạo mục tiêu mới'),
+      title: const Text('Create New Goal'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -51,13 +51,13 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Tiêu đề mục tiêu',
-                  hintText: 'Ví dụ: Giảm 10kg trong 3 tháng',
+                  labelText: 'Goal Title',
+                  hintText: 'e.g., Lose 10kg in 3 months',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Vui lòng nhập tiêu đề';
+                    return 'Please enter a title';
                   }
                   return null;
                 },
@@ -67,8 +67,8 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
-                  labelText: 'Mô tả (tùy chọn)',
-                  hintText: 'Mô tả chi tiết về mục tiêu của bạn',
+                  labelText: 'Description (Optional)',
+                  hintText: 'Describe your goal in detail',
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
@@ -76,7 +76,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
               const SizedBox(height: 16),
               // Category
               Text(
-                'Phân loại',
+                'Category',
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: 8),
@@ -104,7 +104,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
               const SizedBox(height: 16),
               // Target date
               Text(
-                'Ngày mục tiêu (tùy chọn)',
+                'Target Date (Optional)',
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: 8),
@@ -113,8 +113,8 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
                 icon: const Icon(Icons.calendar_today),
                 label: Text(
                   _targetDate == null
-                      ? 'Chọn ngày'
-                      : '${_targetDate!.day}/${_targetDate!.month}/${_targetDate!.year}',
+                      ? 'Select Date'
+                      : '${_targetDate!.month}/${_targetDate!.day}/${_targetDate!.year}',
                 ),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 48),
@@ -129,7 +129,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
                     });
                   },
                   icon: const Icon(Icons.clear),
-                  label: const Text('Xóa ngày mục tiêu'),
+                  label: const Text('Clear Date'),
                 ),
               ],
             ],
@@ -139,7 +139,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Hủy'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -154,7 +154,7 @@ class _CreateGoalDialogState extends State<CreateGoalDialog> {
               });
             }
           },
-          child: const Text('Tạo'),
+          child: const Text('Create'),
         ),
       ],
     );

@@ -9,12 +9,14 @@ class HabitCard extends StatefulWidget {
   final HabitEntity habit;
   final VoidCallback onCheckin;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const HabitCard({
     super.key,
     required this.habit,
     required this.onCheckin,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -103,32 +105,6 @@ class _HabitCardState extends State<HabitCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header với icons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.bar_chart,
-                    size: 20,
-                    color: habitColor,
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: widget.onDelete,
-                    child: Icon(
-                      Icons.delete_outline,
-                      size: 20,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          
           // Mini Calendar và Habit Info
           Row(
             children: [
@@ -145,6 +121,7 @@ class _HabitCardState extends State<HabitCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title với Edit và Delete buttons
                     Row(
                       children: [
                         Icon(habitIcon, color: habitColor, size: 20),
@@ -155,6 +132,25 @@ class _HabitCardState extends State<HabitCard> {
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
+                          ),
+                        ),
+                        // Edit button
+                        GestureDetector(
+                          onTap: widget.onEdit,
+                          child: Icon(
+                            Icons.edit_outlined,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Delete button
+                        GestureDetector(
+                          onTap: widget.onDelete,
+                          child: Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: Colors.red,
                           ),
                         ),
                       ],

@@ -24,7 +24,7 @@ class _CreateSubGoalDialogState extends State<CreateSubGoalDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Thêm mục tiêu con'),
+      title: const Text('Add Sub-goal'),
       content: Form(
         key: _formKey,
         child: Column(
@@ -35,13 +35,13 @@ class _CreateSubGoalDialogState extends State<CreateSubGoalDialog> {
             TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
-                labelText: 'Tiêu đề mục tiêu con',
-                hintText: 'Ví dụ: Tập thể dục 30 phút mỗi ngày',
+                labelText: 'Sub-goal Title',
+                hintText: 'e.g., Exercise 30 minutes daily',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Vui lòng nhập tiêu đề';
+                  return 'Please enter a title';
                 }
                 return null;
               },
@@ -51,8 +51,8 @@ class _CreateSubGoalDialogState extends State<CreateSubGoalDialog> {
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
-                labelText: 'Mô tả (tùy chọn)',
-                hintText: 'Mô tả chi tiết về mục tiêu con',
+                labelText: 'Description (Optional)',
+                hintText: 'Describe your sub-goal in detail',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -63,7 +63,7 @@ class _CreateSubGoalDialogState extends State<CreateSubGoalDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Hủy'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -76,7 +76,7 @@ class _CreateSubGoalDialogState extends State<CreateSubGoalDialog> {
               });
             }
           },
-          child: const Text('Thêm'),
+          child: const Text('Add'),
         ),
       ],
     );

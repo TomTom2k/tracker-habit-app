@@ -39,19 +39,19 @@ extension GoalCategoryExtension on GoalCategory {
   String get displayName {
     switch (this) {
       case GoalCategory.health:
-        return 'Sức khỏe';
+        return 'Health';
       case GoalCategory.career:
-        return 'Sự nghiệp';
+        return 'Career';
       case GoalCategory.finance:
-        return 'Tài chính';
+        return 'Finance';
       case GoalCategory.education:
-        return 'Học tập';
+        return 'Education';
       case GoalCategory.personal:
-        return 'Cá nhân';
+        return 'Personal';
       case GoalCategory.relationship:
-        return 'Mối quan hệ';
+        return 'Relationship';
       case GoalCategory.other:
-        return 'Khác';
+        return 'Other';
     }
   }
 

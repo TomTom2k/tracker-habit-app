@@ -108,19 +108,19 @@ class SubGoalItem extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Xóa mục tiêu con'),
-        content: const Text('Bạn có chắc chắn muốn xóa mục tiêu con này?'),
+        title: const Text('Delete Sub-goal'),
+        content: const Text('Are you sure you want to delete this sub-goal?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Hủy'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: const Text('Xóa'),
+            child: const Text('Delete'),
           ),
         ],
       ),

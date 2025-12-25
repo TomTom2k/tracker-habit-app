@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/habit_provider.dart';
 import '../widgets/habit_card.dart';
 import '../widgets/create_habit_dialog.dart';
+import '../widgets/edit_habit_dialog.dart';
+import '../../domain/entities/habit_entity.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -105,6 +107,7 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
                             habit: habit,
                             onCheckin: () => _handleCheckin(context, provider, habit.id),
                             onDelete: () => _handleDelete(context, provider, habit.id),
+                            onEdit: () => _handleEdit(context, provider, habit),
                           ),
                         )),
                 ],
@@ -352,6 +355,21 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<void> _handleEdit(
+    BuildContext context,
+    HabitProvider provider,
+    HabitEntity habit,
+  ) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => EditHabitDialog(habit: habit),
+    );
+
+    if (result == true && mounted) {
+      provider.loadHabits();
     }
   }
 
