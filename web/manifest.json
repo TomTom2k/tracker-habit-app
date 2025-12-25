@@ -1,6 +1,6 @@
 {
-    "name": "app",
-    "short_name": "app",
+    "name": "Kairo Flow",
+    "short_name": "Kairo Flow",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

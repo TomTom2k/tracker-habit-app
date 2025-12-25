@@ -141,7 +141,7 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
             context,
             value: provider.totalHabits.toString(),
             label: 'Total Habits',
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(width: 16),
@@ -150,7 +150,7 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
             context,
             value: provider.todayCheckinsCount.toString(),
             label: 'Completed Today',
-            color: Colors.green,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ],
@@ -214,7 +214,7 @@ class _HabitPageState extends State<HabitPage> with WidgetsBindingObserver {
           children: [
             Icon(
               Icons.add_circle_outline,
-              color: Colors.blue,
+              color: Theme.of(context).colorScheme.primary,
               size: 24,
             ),
             const SizedBox(width: 12),

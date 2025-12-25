@@ -200,7 +200,7 @@ class PomodoroPage extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isSelected
-                    ? Colors.white
+                    ? Theme.of(context).colorScheme.onPrimary
                     : Theme.of(context).colorScheme.onSurface,
               ),
           ),
